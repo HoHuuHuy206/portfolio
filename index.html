@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>HUYVERSE: LOST MEMORY</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23050a10'/><text x='4' y='26' font-size='24'>🎮</text></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <div id="gameWrapper">
+    <canvas id="gameCanvas" width="1024" height="768" tabindex="0"></canvas>
+
+    <div id="scanlines"></div>
+
+    <div id="ui">
+
+      <div class="bar-wrap">
+        <div class="bar-container">
+          <div class="bar-label">HP</div>
+          <div class="bar-outer">
+            <div class="bar-inner" id="hpBar" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="killCount">KILLS: 0</div>
+      <div id="waveInfo">ZONE 0 / 3</div>
+
+      <div id="explosiveStockDisplay">💥 Đạn nổ: 0/3</div>
+
+      <div id="skillSlots">
+        <div class="slot">BLADE<div class="key">Z</div></div>
+        <div class="slot">GUN<div class="key">X</div></div>
+        <div class="slot">HACK<div class="key">E</div></div>
+        <div class="slot">DASH<div class="key">SHIFT</div></div>
+        <div class="slot">BOMB<div class="key">C</div></div>
+      </div>
+
+      <div id="bossHpWrap">
+        <div id="bossName">◈ NULL.EXE ◈</div>
+        <div id="bossBarOuter">
+          <div id="bossBar" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <div id="dialogue">
+        <div id="dlgSpeaker">NPC</div>
+        <div id="dlgText"></div>
+      </div>
+
+      <div id="popup">
+        <div id="popTitle"></div>
+        <div id="popText"></div>
+      </div>
+
+      <div id="zonePanel">
+        <div id="zonePanelIcon"></div>
+        <div id="zonePanelTitle"></div>
+        <div id="zonePanelContent"></div>
+        <button id="zonePanelClose" onclick="closeZonePanel()">[ TIẾP TỤC ]</button>
+      </div>
+
+    </div>
+
+    <!-- ── PORTFOLIO REPORT ───────────────────────────────────────────────── -->
+    <div id="portfolioReport">
+      <!-- Được build bởi portfolio-report.js -->
+    </div>
+
+
+
+    <!-- ── HOW TO PLAY OVERLAY ─────────────────────────────────────────────── -->
+    <div id="howToPlayOverlay">
+      <div class="htp-container">
+
+        <div class="htp-header">
+          <div class="htp-badge">◈ SYSTEM MANUAL ◈</div>
+          <div class="htp-title">CÁCH CHƠI</div>
+          <div class="htp-sub">HUYVERSE: LOST MEMORY — PLAYER GUIDE v1.0</div>
+        </div>
+
+        <div class="htp-grid">
+
+          <!-- Di chuyển -->
+          <div class="htp-section cyan">
+            <div class="htp-section-title">🕹️ DI CHUYỂN</div>
+            <div class="htp-key-row">
+              <span class="htp-key">W</span><span class="htp-key">A</span><span class="htp-key">S</span><span class="htp-key">D</span>
+              <span class="htp-key-desc">hoặc <strong>phím mũi tên</strong></span>
+            </div>
+            <div class="htp-key-row" style="margin-top:6px;">
+              <span class="htp-key yellow">SHIFT</span>
+              <span class="htp-key-desc"><strong>Dash</strong> — lướt nhanh tránh đạn</span>
+            </div>
+          </div>
+
+          <!-- Kỹ năng -->
+          <div class="htp-section pink">
+            <div class="htp-section-title">⚔️ KỸ NĂNG CHIẾN ĐẤU</div>
+            <div class="htp-key-row">
+              <span class="htp-key pink">Z</span>
+              <span class="htp-key-desc"><strong>BLADE</strong> — chém cận chiến AOE 80px</span>
+            </div>
+            <div class="htp-key-row">
+              <span class="htp-key pink">X</span>
+              <span class="htp-key-desc"><strong>GUN</strong> — bắn đạn theo hướng di chuyển</span>
+            </div>
+            <div class="htp-key-row">
+              <span class="htp-key pink">E</span>
+              <span class="htp-key-desc"><strong>HACK</strong> — làm chậm tất cả quái 3.5s</span>
+            </div>
+            <div class="htp-key-row">
+              <span class="htp-key yellow">C</span>
+              <span class="htp-key-desc"><strong>BOMB</strong> — đạn nổ AOE (cần 3 kills/viên)</span>
+            </div>
+          </div>
+
+          <!-- Mục tiêu -->
+          <div class="htp-section yellow">
+            <div class="htp-section-title">🎯 MỤC TIÊU</div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">1️⃣</span>
+              <span class="htp-tip-text">Đi qua <strong>3 khu vực</strong>: About Me, Projects, Contact</span>
+            </div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">2️⃣</span>
+              <span class="htp-tip-text">Tiêu diệt hết quái trong mỗi khu để <strong>Boss xuất hiện</strong></span>
+            </div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">3️⃣</span>
+              <span class="htp-tip-text">Đánh bại Boss để <strong>mở khóa Portfolio</strong> khu vực đó</span>
+            </div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">🏆</span>
+              <span class="htp-tip-text">Xong cả 3 zone → <strong>Portfolio Report</strong> mở ra!</span>
+            </div>
+          </div>
+
+          <!-- Tips -->
+          <div class="htp-section green">
+            <div class="htp-section-title">💡 MẸO CHIẾN ĐẤUU</div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">⚡</span>
+              <span class="htp-tip-text">Mỗi 3 kills tích lũy <strong>1 đạn nổ</strong> (tối đa 3 viên)</span>
+            </div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">🛡️</span>
+              <span class="htp-tip-text">Sau khi nhận đòn có <strong>i-frames</strong> — lợi dụng để thoát</span>
+            </div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">💊</span>
+              <span class="htp-tip-text">Nhặt <strong>HP item</strong> rơi trên map để hồi máu</span>
+            </div>
+            <div class="htp-tip-row">
+              <span class="htp-tip-icon">🎰</span>
+              <span class="htp-tip-text">Phá <strong>Chest</strong> để nhận phần thưởng bất ngờ</span>
+            </div>
+          </div>
+
+          <!-- Các khu vực -->
+          <div class="htp-section cyan full-width">
+            <div class="htp-section-title">🗺️ 3 KHU VỰC CỦA HUYVERSE</div>
+            <div class="htp-zones">
+              <div class="htp-zone-card">
+                <div class="htz-icon">👨</div>
+                <div class="htz-name" style="color:#00f0ff">ZONE 1</div>
+                <div class="htz-name" style="color:#00f0ff;font-size:8px;margin-top:2px;">ABOUT ME & SKILLS</div>
+                <div class="htz-desc">Cyber Lab — Khám phá bản thân Huy, kỹ năng lập trình web & game</div>
+              </div>
+              <div class="htp-zone-card">
+                <div class="htz-icon">🗂️</div>
+                <div class="htz-name" style="color:#ffaa00">ZONE 2</div>
+                <div class="htz-name" style="color:#ffaa00;font-size:8px;margin-top:2px;">PROJECTS</div>
+                <div class="htz-desc">Project Archive — Tank Fighter, Quản lý Homestay, THP Shop, HUYVERSE</div>
+              </div>
+              <div class="htp-zone-card">
+                <div class="htz-icon">📡</div>
+                <div class="htz-name" style="color:#00ff88">ZONE 3</div>
+                <div class="htz-name" style="color:#00ff88;font-size:8px;margin-top:2px;">CONTACT</div>
+                <div class="htz-desc">Transmission Hub — Kết nối với Huy qua email, GitHub, Facebook</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Developer -->
+          <div class="htp-section red full-width">
+            <div class="htp-section-title">👨‍💻 VỀ DEVELOPER</div>
+            <div style="text-align:center;margin-bottom:14px;font-size:11px;color:rgba(200,220,240,0.65);line-height:1.8;">
+              Game được tạo bởi <strong style="color:#ff6688">Hồ Hoàng Đức Huy</strong> — sinh viên Công nghệ Thông tin<br>
+              Cao đẳng Công nghệ Thủ Đức &nbsp;|&nbsp; Web Developer Intern &nbsp;|&nbsp; 2024–2027
+            </div>
+            <div class="htp-social">
+              <a class="htp-social-link github" href="https://github.com/HoHuuHuy206" target="_blank">
+                🐙 <span>github.com/HoHuuHuy206</span>
+              </a>
+              <a class="htp-social-link facebook" href="https://www.facebook.com/HoHuuHuy206?locale=vi_VN" target="_blank">
+                📘 <span>facebook.com/HoHuuHuy206</span>
+              </a>
+            </div>
+          </div>
+
+        </div><!-- end htp-grid -->
+
+        <div class="htp-close-row">
+          <button class="htp-close-btn" onclick="closeHowToPlay()">[ ĐÓNG — QUAY LẠI ]</button>
+        </div>
+
+      </div><!-- end htp-container -->
+    </div><!-- end howToPlayOverlay -->
+    <button id="muteBtn" onclick="toggleMuteGame()" title="Tắt/Bật âm thanh">🔊</button>
+
+    <!-- ── GAME OVER SCREEN ───────────────────────────────────────────────── -->
+    <div id="gameOverScreen">
+      <div class="go-content">
+        <div class="go-glitch">GAME OVER</div>
+        <div class="go-sub">CONNECTION LOST</div>
+        <div class="go-stats">
+          <div class="go-stat-row"><span class="go-lbl">ZONES CLEARED</span><span class="go-val" id="goZones">0 / 3</span></div>
+          <div class="go-stat-row"><span class="go-lbl">TOTAL KILLS</span><span class="go-val" id="goKills">0</span></div>
+        </div>
+        <div class="go-msg" id="goMsg">Hệ thống sụp đổ. Khởi động lại...</div>
+        <div class="go-buttons">
+          <button class="btn go-btn-retry" onclick="startGame()">↺ THỬ LẠI</button>
+          <button class="btn go-btn-title" onclick="goToTitle()">⌂ MÀN HÌNH CHÍNH</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TITLE SCREEN ────────────────────────────────────────────────────── -->
+    <div id="screen">
+      <div class="title-game">HUYVERSE</div>
+      <div class="subtitle">LOST MEMORY</div>
+      <div class="map-preview">
+        <div class="zone-preview-grid">
+          <div class="zp z1">👨<span>ABOUT ME & SKILLS</span></div>
+          <div class="zp z2">🗂️<span>PROJECTS</span></div>
+          <div class="zp z3">📡<span>CONTACT</span></div>
+        </div>
+      </div>
+      <div class="instructions">
+        WASD / Arrow — Di chuyển &nbsp;|&nbsp; Z — Chém cận chiến &nbsp;|&nbsp; X — Bắn đạn<br>
+        SHIFT — Dash &nbsp;|&nbsp; E — Hack làm chậm &nbsp;|&nbsp; C — Đạn nổ (tích 3 Kills)<br>
+        <span style="color: #ffaa00;">Khám phá 3 khu vực · Đánh bại Boss · Mở Portfolio!</span>
+      </div>
+      <br>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn" onclick="startGame()">▶ BẮT ĐẦU HÀNH TRÌNH</button>
+        <button class="btn" style="font-size:12px;letter-spacing:2px;padding:14px 24px;border-color:rgba(0,240,255,0.5);color:rgba(0,240,255,0.8);" onclick="openHowToPlay()">❓ CÁCH CHƠI</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/game-state.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/boss.js"></script>
+  <script src="js/bullets.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/portfolio-report.js"></script>
+  <script src="js/rendering.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function openHowToPlay() {
+      const el = document.getElementById('howToPlayOverlay');
+      if (!el) return;
+      el.style.display = 'flex';
+      requestAnimationFrame(() => setTimeout(() => el.classList.add('visible'), 20));
+    }
+    function closeHowToPlay() {
+      const el = document.getElementById('howToPlayOverlay');
+      if (!el) return;
+      el.classList.remove('visible');
+      setTimeout(() => { el.style.display = 'none'; }, 300);
+    }
+    // Đóng khi click ngoài panel
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlay = document.getElementById('howToPlayOverlay');
+      if (overlay) {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) closeHowToPlay();
+        });
+      }
+    });
+  </script>
+
+</body>
+
+</html>
